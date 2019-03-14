@@ -1,0 +1,339 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+    int data;
+    struct node *link;
+};
+typedef struct node NODE;
+NODE* create_node();
+NODE* insert_front(NODE* head, int num);
+NODE* delete_front(NODE* head);
+void display(NODE* head);
+int count(NODE* head);
+NODE* insert_end(NODE *head, int num);
+NODE* delete_end(NODE *head);
+NODE* insert_any_position(NODE *head, int num);
+NODE* delete_any_position(NODE *head);
+void search(NODE *head, int num);
+NODE * delete_key(NODE *head, int key);
+int main()
+{
+    NODE* head=NULL;
+    int ch,num,cnt;
+
+    while(1)
+    {
+        printf("Enter choice\n1.Insert front\n2.Delete front\n3.Insert End\n4.Delete End\n5.Insert Position\n6.Delete Position\n7.Display\n8.Count\n9.Search\n10.Delete key\n13.Exit\n\n");
+        scanf("%d",&ch);
+    switch(ch)
+    {
+     case 1: printf("Enter num to insert\n");
+             scanf("%d",&num);
+             head = insert_front(head,num);
+             break;
+    case 2: head=delete_front(head);
+            break;
+    case 3: printf("Enter number to insert\n");
+            scanf("%d", &num);
+            head=insert_end(head,num);
+            break;
+    case 4: head=delete_end(head);
+            break;
+    case 5: printf("Enter number to insert\n");
+            scanf("%d", &num);
+            head=insert_any_position(head,num);
+            break;
+    case 6: head=delete_any_position(head);
+            break;
+    case 7: display(head);
+            break;
+    case 8: cnt = count(head);
+            printf("Number of nodes = %d\n", cnt);
+            break;
+    case 9: printf("Enter number to search\n");
+            scanf("%d", &num);
+            search(head, num);
+            break;
+    case 10: printf("Enter key to delete\n");
+             scanf("%d", &num);
+             head = delete_key(head, num);
+             break;
+    case 13: printf("Thank You\n");
+            exit(0);
+    default: printf("Invaid choice\n");
+            break;
+    }
+    }
+    return 0;
+}
+NODE* create_node()
+{
+    NODE* temp;
+    temp = (NODE*)malloc(sizeof(NODE*));
+    if(temp==NULL)
+    {
+        printf("Cannot allocate memory\n");
+        exit(0);
+    }
+    return temp;
+};
+
+NODE* insert_front(NODE* head, int num)
+{
+    NODE* temp;
+    temp=create_node();
+    temp->data=num;
+    temp->link=NULL;
+    if(head==NULL)
+    {
+        head = temp;
+    }
+    else
+    {
+        temp->link = head;
+        head = temp;
+    }
+    return head;
+}
+void display(NODE* head)
+{
+    NODE* temp;
+    temp = head;
+    if(temp==NULL)
+    {
+       printf("List is empty\n");
+    }
+    else
+    {
+        while(temp!=NULL)
+        {
+            printf("%d ", temp->data);
+            temp = temp->link;
+        }
+        printf("\n");
+    }
+}
+
+NODE* delete_front(NODE* head)
+{
+    NODE* temp;
+    temp = head;
+    if(temp == NULL)
+    {
+        printf("List is empty\n");
+    }
+    else
+    {
+        head=temp->link;
+        printf("Deleted %d\n", temp->data);
+        temp->link = NULL;
+        free(temp);
+    }
+    return head;
+}
+
+int count(NODE *head)
+{
+    NODE* temp;
+    int c=0;
+    temp = head;
+    if(temp==NULL)
+    {
+       printf("List is empty\n");
+    }
+    else
+    {
+        while(temp!=NULL)
+        {
+            c++;
+            temp = temp->link;
+        }
+    }
+    return c;
+}
+NODE* insert_end(NODE *head, int num)
+{
+    NODE *temp, *p;
+    temp = create_node();
+    temp->data = num;
+    temp->link = NULL;
+    if(head == NULL)
+    {
+        head = temp;
+    }
+    else
+    {
+        p = head;
+        while(p->link!=NULL)
+        {
+            p = p->link;
+        }
+        p->link = temp;
+    }
+    return head;
+}
+NODE* delete_end(NODE *head)
+{
+    NODE *temp, *prev;
+    temp = head;
+    if(head == NULL)
+    {
+        printf("List is empty\n");
+    }
+    else if(temp->link == NULL)
+    {
+        head = temp->link;
+        printf("Deleted %d\n", temp->data);
+        free(temp);
+    }
+    else
+    {
+        while(temp->link != NULL)
+        {
+            prev = temp;
+            temp = temp->link;
+        }
+        prev->link = NULL;
+        printf("Deleted %d\n", temp->data);
+        free(temp);
+    }
+    return head;
+}
+NODE* insert_any_position(NODE *head, int num)
+{
+    int pos, len, i=1;
+    NODE *temp, *p;
+    temp = create_node();
+    temp->data = num;
+    temp->link = NULL;
+    printf("Enter position\n");
+    scanf("%d", &pos);
+    if(head == NULL && pos == 1)
+    {
+        head = temp;
+    }
+    else if(pos == 1)
+    {
+        temp->link = head;
+        head = temp;
+    }
+    else
+    {
+    len = count(head);
+    if(pos >= (len+2) || pos <= 0)
+    {
+        printf("Invalid position\n");
+        printf("Current nodes = %d\n", len);
+    }
+    else
+    {
+        p = head;
+        while(i < pos-1)
+        {
+            p = p->link;
+            i++;
+        }
+        temp->link = p->link;
+        p->link = temp;
+    }
+    }
+    return head;
+}
+
+NODE* delete_any_position(NODE *head)
+{
+    NODE *temp, *p;
+    int pos, len, i=1;
+    temp=head;
+    printf("Enter position to delete\n");
+    scanf("%d", &pos);
+    len = count(head);
+    if(pos > len || pos <= 0)
+        printf("Invalid Position\n");
+    else if(temp == NULL)
+        printf("List is empty\n");
+    else if(pos == 1)
+    {
+        head = temp->link;
+        temp->link = NULL;
+        printf("Deleted %d\n", temp->data);
+        free(temp);
+    }
+    else
+    {
+        while(i < pos-1)
+        {
+            temp = temp->link;
+            i++;
+        }
+        p = temp->link;
+        temp->link = p->link;
+        p->link = NULL;
+        printf("Deleted %d\n",p->data);
+        free(p);
+    }
+    return head;
+}
+void search(NODE *head, int key)
+{
+    NODE *temp;
+    int flag=0,c=1;
+    temp = head;
+    if(head == NULL)
+        printf("List is empty\n");
+    else
+    {
+        while(temp!=NULL)
+        {
+            if(temp->data == key)
+            {
+                flag = 1;
+                break;
+            }
+            c++;
+            temp = temp->link;
+        }
+        if(flag == 1)
+        {
+            printf("Key found at position %d\n", c);
+        }
+        else
+            printf("Key not found\n");
+    }
+}
+NODE * delete_key(NODE *head, int key)
+{
+    NODE *temp, *p;
+    temp = head;
+    int flag=0;
+    if(temp == NULL)
+        printf("List is empty\n");
+    else if(temp->data == key)
+    {
+        head = temp->link;
+        temp->link = NULL;
+        printf("Deleted %d\n", temp->data);
+        free(temp);
+    }
+    else
+    {
+        while(temp->link!=NULL)
+        {
+            if(temp->link->data == key)
+            {
+                p = temp->link;
+                temp->link = p->link;
+                p->link = NULL;
+                printf("Deleted %d\n",p->data);
+                free(p);
+                flag = 1;
+                break;
+            }
+            temp = temp->link;
+        }
+        if(flag == 0)
+            printf("Key not found\n");
+    }
+    return head;
+}
