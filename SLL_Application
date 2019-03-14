@@ -1,0 +1,94 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct student
+{
+    int rno;
+    char name[20];
+    float avg;
+    struct student *link;
+};
+typedef struct student STUD;
+STUD * create_node();
+STUD * insert_front(STUD *head);
+void display(STUD *head);
+STUD * delete_front(STUD *head);
+int main()
+{
+    STUD *head=NULL;
+    int ch;
+    while(1)
+    {
+      printf("1.insert front\n2.dispaly\n3.delete front\n10.exit\n");
+    scanf("%d", &ch);
+    switch(ch)
+    {
+        case 1: head = insert_front(head);
+                break;
+        case 2: display(head);
+                break;
+        case 3: head = delete_front(head);
+                break;
+        case 10: exit(0);
+    }
+    }
+    return 0;
+}
+STUD* create_node()
+{
+    STUD *temp;
+    temp = (STUD *)malloc(sizeof(STUD));
+    if(temp==NULL)
+    {
+        printf("Cannot allocate memory\n");
+        exit(0);
+    }
+    printf("Enter student roll no, name, avg\n");
+    scanf("%d%s%f",&temp->rno,temp->name,&temp->avg);
+    temp->link = NULL;
+    return temp;
+}
+STUD* insert_front(STUD *head)
+{
+    STUD *temp;
+    temp = create_node();
+    if(head == NULL)
+        head = temp;
+    else
+    {
+        temp->link = head;
+        head = temp;
+    }
+    return head;
+}
+void display(STUD *head)
+{
+    STUD *temp;
+    temp = head;
+    if(temp == NULL)
+        printf("List is empty\n");
+    else
+    {
+        printf("RollNo\tName\tAvg\n");
+        printf("--------------------------\n");
+        while(temp!=NULL)
+        {
+            printf("%d\t%s\t%f\n",temp->rno,temp->name,temp->avg);
+            temp=temp->link;
+        }
+        printf("\n");
+    }
+}
+STUD * delete_front(STUD *head)
+{
+    STUD *temp;
+    temp = head;
+    if(temp == NULL)
+        printf("List is empty\n");
+    else{
+        head = temp->link;
+        printf("Deleted %d %s %f\n",temp->rno,temp->name,temp->avg);
+        temp->link=NULL;
+        free(temp);
+    }
+    return head;
+}
